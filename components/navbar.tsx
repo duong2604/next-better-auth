@@ -2,9 +2,21 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const { data: session } = useSession();
+  const router = useRouter();
+  const handleSignOut = async () => {
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/login");
+          router.refresh();
+        },
+      },
+    });
+  };
 
   return (
     <nav className="border-b border-slate-800 px-6 py-4 flex items-center justify-between">
@@ -14,7 +26,7 @@ export default function Navbar() {
 
       {session ? (
         <button
-          onClick={() => signOut()}
+          onClick={() => handleSignOut()}
           className="text-sm text-red-400 bg-red-950 border border-red-900 rounded-md px-3 py-1.5 hover:bg-red-900 transition-colors"
         >
           Sign out
